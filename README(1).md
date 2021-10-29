@@ -24,7 +24,9 @@
 
 ## Contributors <a id="Contributors"></a>
     Contributors: me
-    
+## WALKTHROUGH
+https://watch.screencastify.com/v/fd4YDcJHGb63YADK3T7L
+ 
 ## Tests <a id="Tests"></a>
     Tests: Too much
     

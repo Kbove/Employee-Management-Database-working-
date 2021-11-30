@@ -1,5 +1,5 @@
 # Employee Database
-https://github.com/kbove/Employee Database
+https://github.com/kbove/Employee-Management-Database-working
     
 ## Description
 A DataBase for employees utilizing MySQL, node js, and inquirer. Allows you to view departments, roles, and employees in formatted tables within the terminal

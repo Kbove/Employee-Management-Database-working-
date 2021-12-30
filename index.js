@@ -5,7 +5,7 @@ const cTable = require('console.table');
 const deptsArray = []
 const rolesArray = []
 const managersArray = []
-const employeesArray = []
+let employeesArray = []
 
 // Connect to database
 const db = mysql.createConnection(
@@ -130,6 +130,7 @@ function viewEmps() {
 
 
 function addDept() {
+    console.log('here')
     inquirer.prompt([
         {
             name: 'name',
@@ -146,8 +147,8 @@ function addDept() {
                 console.log(err)
             } else {
                 deptsArray.push(newDept)
+                menu();
             }
-            menu();
         })
     })
 };
@@ -200,9 +201,9 @@ function addRole() {
                                     console.log(err)
                                 } else {
                                     rolesArray.push(roleTitle)
+                                    menu()
                                 }
                             })
-                            menu()
                         }
                     }
                 });
@@ -270,8 +271,8 @@ function addEmp() {
                                     } else {
                                         const newManager = empFirstName.concat(empLastName)
                                         managersArray.push(newManager)
+                                        menu()
                                     }
-                                    menu()
                                 })
                             } else {
                                 for (let z = 0; z < results.length; z++) {
@@ -285,8 +286,8 @@ function addEmp() {
                                                 } else {
                                                     const newManager = empFirstName.concat(empLastName)
                                                     managersArray.push(newManager)
+                                                    menu()
                                                 }
-                                                menu()
                                     })
                                 }
                             }
@@ -295,8 +296,6 @@ function addEmp() {
                 }
             }
         })
-        //     }
-        // })
     })
 }
 
@@ -309,12 +308,13 @@ function updateEmp() {
             let employeeName = results[i].first_name + " " + results[i].last_name
             employeesArray.push(employeeName)
         }
+        let dupeCheckEmpArr = [...new Set(employeesArray)] 
         inquirer.prompt([
             {
                 name: 'empName',
                 message: 'Select an employee to update',
                 type: 'list',
-                choices: employeesArray,
+                choices: dupeCheckEmpArr,
             },
             {
                 name: 'newRole',
@@ -338,13 +338,13 @@ function updateEmp() {
                             console.log(err);
                         } else {
                             console.log(userData)
+                            menu()
                         }
                     })
                 }
             })
         })
     }});
-    menu()
 }
 
 

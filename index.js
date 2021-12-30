@@ -5,6 +5,7 @@ const cTable = require('console.table');
 const deptsArray = []
 const rolesArray = []
 const managersArray = []
+const employeesArray = []
 
 // Connect to database
 const db = mysql.createConnection(
@@ -118,29 +119,11 @@ function viewEmps() {
         console.table("Employees", results);
         if (err) throw err;
     });
-    // db.query("SELECT employee.id AS Employee_ID, employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Job_Title, department.name AS Department_Name, role.salary AS Salary FROM employee LEFT JOIN role ON employee.id = role.department_id LEFT JOIN department ON employee.id = department.id;", function (err, results) {
-    //     console.table("Employees", results);
-    //     if (err) throw err;
-    // });
-
-    //ID from employee 
-    //first/last name from employees, 
-    //title from role
-    //salary from role
-    //department name from department
-    //manager from employees (concat first/last name)
     console.log("==================================")
     const sql = `SELECT employee.id, employee.first_name,employee.last_name, role.title, department.name AS Department,role.salary, CONCAT(m.first_name, ' ',m.last_name) AS Manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee m ON employee.manager_id = m.id;`
     db.query(sql, (err, results) => {
         console.table(results)
     })
-
-
-
-    // db.query(`SELECT e.id 'ID', e.first_name 'First_Name', e.last_name 'Last_Name', CONCAT(m.first_name, ' ',m.last_name) 'Manager' FROM employee e JOIN employee m ON e.manager_id = m.id;`, (err,results) =>{
-    //     console.table("Employees", results);
-    //     if (err) throw err;
-    // })
     menu();
 }
 
@@ -304,7 +287,7 @@ function addEmp() {
                                                     managersArray.push(newManager)
                                                 }
                                                 menu()
-                                            })
+                                    })
                                 }
                             }
                         }
@@ -315,6 +298,53 @@ function addEmp() {
         //     }
         // })
     })
+}
+
+function updateEmp() {
+    db.query('SELECT * FROM employee', function (err, results) {
+        if (err) {
+            console.log(err);
+        } else {
+        for (let i = 0; i < results.length; i++) {
+            let employeeName = results[i].first_name + " " + results[i].last_name
+            employeesArray.push(employeeName)
+        }
+        inquirer.prompt([
+            {
+                name: 'empName',
+                message: 'Select an employee to update',
+                type: 'list',
+                choices: employeesArray,
+            },
+            {
+                name: 'newRole',
+                message: "What is this employee's new role?",
+                type: 'list',
+                choices: rolesArray
+            }
+        ]).then(data => {
+            let fullName = data.empName.split(' ')
+            let firstName = fullName[0]
+            let lastName = fullName[1]
+            let role = data.newRole
+            db.query(`SELECT * FROM role WHERE title = "${role}"`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(result)
+                    let newRoleID = result[0].id
+                    db.query(`UPDATE employee SET role_id = "${newRoleID}" WHERE first_name = "${firstName}" AND last_name = "${lastName}"`, (err, userData) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log(userData)
+                        }
+                    })
+                }
+            })
+        })
+    }});
+    menu()
 }
 
 
